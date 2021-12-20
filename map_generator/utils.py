@@ -57,3 +57,62 @@ def find_files_recursive(folder, files = None, extension=None):
     return files
 
 
+def number_to_letter(number):
+    
+    if number < 1:
+        return ValueError(f'Deve ser maior que 1')
+    
+    number = number-1
+        
+    col_letters = (
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        )
+    
+    number_of_letters = len(col_letters)
+    
+    if number < number_of_letters:
+        return col_letters[number]
+    
+    
+    floor = number//number_of_letters
+    if floor > number_of_letters:
+        raise NotImplementedError('Maior valor é ZZ')
+    rest = number%number_of_letters
+    
+    letras = [
+        col_letters[floor-1],
+        col_letters[rest]
+    ]
+    
+    return ''.join(letras)
+    
+def letter_to_number(letter):
+    
+    col_letters = (
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        )
+    
+    letter = list(letter)
+    if len(letter)>2:
+        raise NotImplementedError('Maior valor é ZZ')
+    letter.reverse()
+    total = 0
+    for i, char in enumerate(letter):
+        letter_index = col_letters.index(char)+1
+        if i == 0:
+            total+=letter_index
+        val = i*letter_index * 26
+        total += val
+    
+    return total
+
+def gen_col_range(col_inicio, col_fim):
+        
+        col_ini_num = letter_to_number(col_inicio)
+        col_fim_num = letter_to_number(col_fim)
+        
+        num_range  = range(col_ini_num, col_fim_num+1)
+        
+        return [number_to_letter(num) for num in num_range]
+
+
