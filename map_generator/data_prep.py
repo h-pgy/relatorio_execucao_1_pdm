@@ -1,5 +1,5 @@
 from .read_xl_data import DataParser
-from .config import SHAPEFILE_PATH, OVERWRITE, DE_PARA_SUBS
+from .config import SHAPEFILE_PATH, OVERWRITE, DE_PARA_SUBS, EPSG
 from .utils import open_shp
 from functools import partial
 
@@ -14,13 +14,13 @@ class DataPrepper:
         self.read_data = reader
 
         if geodf is None:
-            geodf = open_shp(self.SHAPEFILE_PATH)
+            geodf = open_shp(self.SHAPEFILE_PATH, EPSG)
         self.geodf = geodf
 
         if df is None:
             df = self.read_data()
         self.df = df
-        
+
         self.file_names = self.get_filenames(self.df)
         self.cols_not_subs = ('meta_num', 'secretaria', 'obs', 'file_name')
 

@@ -26,6 +26,7 @@ SHAPEFILE_URL = ('http://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/
                 'SIRGAS_SHP_subprefeitura&arqTipo=Shapefile')
 
 SHAPEFILE_PATH = solve_path(ORIGINAL_DATA_DIR, 'dados_geosampa')
+EPSG = '31983'
 
 #configuracoes subprefeituras
 
