@@ -18,7 +18,8 @@ class XlDataReader:
     
     def __init__(self, lazy=True, file=None):
 
-        if lazy and not file:
+        self.lazy=lazy
+        if not lazy and not file:
             raise ValueError(f'Se inicializar sem ser lazy, tem que passar o file')
         
         if not lazy:
@@ -169,16 +170,123 @@ class XlDataReader:
         self.wb = load_workbook(file)
         self.sheets = self.get_sheet_names()
 
-        self.initialized = True
-
     def __call__(self, file=None):
 
         file = file or getattr(self,'file', None)
         if file is None:
             raise ValueError('Lazy load: precisa passar o parametro file')
         
-        if not self.initialized:
+        if self.lazy:
             self.initialize(file)
 
         return self.parse_all_geodata()
 
+class DataParser:
+
+    def __init__(self, source_folder = None, save_folder=None, overwrite=True):
+
+        self.folder = source_folder or DATA_SOURCE_DIR
+        self.save_folder = save_folder or SAVE_CSV_DIR
+        self.overwrite = overwrite
+
+        self.list_files = find_files_recursive
+        self.read_xl = XlDataReader()
+
+    def test_xl_file_name(self, file):
+    
+        fname = os.path.split(file)[-1]
+        fname = fname.lower().strip()
+        files_erradas = ('metas', 'iniciativas', 'controle')
+        
+        for teste in files_erradas:
+            if fname.startswith(teste):
+                return False
+        
+        return True
+
+    def get_xl_files(self):
+        
+        xl_files = self.list_files(self.folder, extension='.xlsx')
+        
+        correct_files = []
+        for file in xl_files:
+            
+            if self.test_xl_file_name(file):
+                correct_files.append(file)
+                
+        
+        return correct_files
+
+
+    def parse_all_files(self, files=None):
+
+        files = files or self.get_xl_files()
+        all_data = []
+        for file in files:
+            print(f'Parsing {file}')
+            data = self.read_xl(file)
+            all_data.append(data)
+            print('Parsed')
+        
+        return all_data
+
+    def load_cached_file(self, output_file):
+
+        file = os.path.join(self.save_folder, output_file)
+        if os.path.exists(file):
+            return pd.read_csv(file, sep=';', encoding='utf-8')
+
+    def parse_sheet_name(self, sheet_name):
+
+        splited = sheet_name.split('_')
+
+        if len(splited) == 2:
+            secretaria, meta = splited
+
+            return secretaria, meta, ''
+        else:
+            secretaria, meta, obs = splited
+            
+            return secretaria, meta, obs
+
+    def parse_to_df(self, sheet_name, data):
+
+        df = pd.DataFrame(data)
+        secretaria, meta, obs = self.parse_sheet_name(sheet_name)
+        df['meta_num'] = meta
+        df['secretaria'] = secretaria
+        df['obs'] = obs
+
+
+        return df
+
+    def generate_dataframe(self, data):
+
+
+        dfs = []
+        for sheet_list in data:
+            for sheet_name, data in sheet_list.items():
+
+                df = self.parse_to_df(sheet_name, data)
+                dfs.append(df)
+
+        return pd.concat(dfs)
+
+    def save_csv(self, df, output_file):
+
+        file = os.path.join(self.save_folder, output_file)
+
+        df.to_csv(file, sep=';', index=False, encoding='utf-8')
+
+    def read_data(self, output_file='dados_regionalizacao_extraidos.csv'):
+
+        if not self.overwrite:
+            saved = self.load_cached_file(output_file)
+            if saved:
+                return saved
+        
+        data = self.parse_all_files()
+        df = self.generate_dataframe(data)
+        self.save_csv(df, output_file)
+
+        return df

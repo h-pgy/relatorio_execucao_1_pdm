@@ -6,6 +6,7 @@ DATA_SOURCE_DIR = solve_path(ORIGINAL_DATA_DIR, 'dados_mapas')
 
 GENERATED_DATA_DIR = solve_folder('dados_gerados')
 SAVE_MAPS_DIR = solve_path(GENERATED_DATA_DIR, 'mapas_gerados')
+SAVE_CSV_DIR = solve_path(GENERATED_DATA_DIR, 'dados_extraidos')
 
 #configuracoes do arquivo de Excel
 COL_INICIO = 'K'
