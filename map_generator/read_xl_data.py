@@ -1,10 +1,13 @@
 import pandas as pd
 from openpyxl import load_workbook
+import os
 from .utils import find_files_recursive, gen_col_range
 from .config import (COL_INICIO,
                     COL_FIM,
                     HEADER_ROW,
-                    DATA_ROW_RANGE)
+                    DATA_ROW_RANGE,
+                    DATA_SOURCE_DIR,
+                    SAVE_CSV_DIR)
 
 class XlDataReader:
     
@@ -13,13 +16,14 @@ class XlDataReader:
     HEADER_ROW = HEADER_ROW
     DATA_ROW_RANGE = DATA_ROW_RANGE
     
-    def __init__(self, file):
+    def __init__(self, lazy=True, file=None):
+
+        if lazy and not file:
+            raise ValueError(f'Se inicializar sem ser lazy, tem que passar o file')
         
-        self.file = file
-        self.gen_col_range = gen_col_range
-        self.wb = load_workbook(file)
-        self.sheets = self.get_sheet_names()
-    
+        if not lazy:
+            self.initialize(file=file)
+            
     def list_data_sheets(self):
         
         data_sheets = [
@@ -157,4 +161,24 @@ class XlDataReader:
                 all_data[sheet_name] = clean_data
         
         return all_data
-    
+
+    def initialize(self, file):
+
+        self.file = file
+        self.gen_col_range = gen_col_range
+        self.wb = load_workbook(file)
+        self.sheets = self.get_sheet_names()
+
+        self.initialized = True
+
+    def __call__(self, file=None):
+
+        file = file or getattr(self,'file', None)
+        if file is None:
+            raise ValueError('Lazy load: precisa passar o parametro file')
+        
+        if not self.initialized:
+            self.initialize(file)
+
+        return self.parse_all_geodata()
+
