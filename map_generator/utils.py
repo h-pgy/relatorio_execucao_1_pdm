@@ -118,7 +118,10 @@ def gen_col_range(col_inicio, col_fim):
 
 def open_shp(path, epsg):
 
-    shp = find_files_recursive(path, extension='.shp')[0]
+    shp = find_files_recursive(path, extension='.shp')
+    if len(shp)<1:
+        return None
+    shp = shp[0]
     geo_df = gpd.read_file(shp)
     geo_df = geo_df.set_crs(epsg=epsg)
 
