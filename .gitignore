@@ -1,6 +1,6 @@
 #project-specific ignores
-original_data/
-generated_data/
+dados_originais/
+dados_gerados/
 prototipagem.ipynb
 
 # Byte-compiled / optimized / DLL files
