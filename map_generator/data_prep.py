@@ -85,6 +85,7 @@ class DataPrepper:
             df = self.df
 
         df_file = df[df['file_name']==file_name].copy()
+        df_file = df_file.fillna(0)
         series_acumulados = df_file[self.subs_cols].sum()
 
         return series_acumulados
