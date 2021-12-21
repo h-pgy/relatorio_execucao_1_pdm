@@ -1,4 +1,5 @@
 import os
+import geopandas as gpd
 
 def solve_folder(folder, absolut=True):
 
@@ -115,4 +116,10 @@ def gen_col_range(col_inicio, col_fim):
         
         return [number_to_letter(num) for num in num_range]
 
+def open_shp(self, path):
+
+    shp = find_files_recursive(path, extension='.shp')[0]
+    geo_df = gpd.read_file(shp)
+
+    return geo_df
 

@@ -1,8 +1,7 @@
 from .read_xl_data import DataParser
 from .config import SHAPEFILE_PATH, OVERWRITE, DE_PARA_SUBS
-from .utils import find_files_recursive
+from .utils import open_shp
 from functools import partial
-import geopandas as gpd
 
 class DataPrepper:
 
@@ -11,12 +10,11 @@ class DataPrepper:
 
     def __init__(self, df = None, geodf=None):
 
-        self.find_shape = partial(find_files_recursive, extension='.shp')
         reader = DataParser(overwrite=OVERWRITE)
         self.read_data = reader
 
         if geodf is None:
-            geodf = self.open_shp()
+            geodf = open_shp(self.SHAPEFILE_PATH)
         self.geodf = geodf
 
         if df is None:
@@ -44,13 +42,6 @@ class DataPrepper:
                 self.DE_PARA_SUBS[sub]
             except KeyError:
                 raise ValueError(f'Subprefeitura {sub} não mapeada! Atualizar configurações.')
-
-    def open_shp(self):
-
-        shp = self.find_shape(self.SHAPEFILE_PATH)[0]
-        geo_df = gpd.read_file(shp)
-
-        return geo_df
 
 
     def check_all_subs_present(self, df):
