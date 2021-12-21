@@ -292,3 +292,7 @@ class DataParser:
         self.save_csv(df, output_file)
 
         return df
+
+    def __call__(self):
+
+        return self.read_data()
