@@ -1,7 +1,7 @@
 from .utils import solve_folder, solve_path
 
 #define se irá sobrescrever os dados parseados
-OVERWRITE = False
+OVERWRITE = True
 
 #configurações de path
 
