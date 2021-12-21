@@ -1,7 +1,7 @@
 from .read_xl_data import DataParser
 from .config import SHAPEFILE_PATH, OVERWRITE, DE_PARA_SUBS, EPSG
 from .utils import open_shp
-from functools import partial
+
 
 class DataPrepper:
 
@@ -49,7 +49,6 @@ class DataPrepper:
         subs_geo = self.geodf['sp_nome'].unique()
         #aqui preciso buscar novamente as colunas
         subs_df = set(self.get_subs_cols(df))
-        print(subs_df)
         for sub in subs_geo:
             if sub not in subs_df:
                 raise ValueError(f'Subprefeitura {sub} não encontrada nos dados!')
