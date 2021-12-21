@@ -13,3 +13,11 @@ COL_INICIO = 'K'
 COL_FIM = 'AP'
 HEADER_ROW = 18
 DATA_ROW_RANGE = 20, 32
+
+#shapefile a ser baixado
+SHAPEFILE_URL = ('http://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/'
+                'downloadArquivo.aspx?orig=DownloadCamadas&arq='
+                '01_Limites Administrativos\\Subprefeituras\\Shapefile\\'
+                'SIRGAS_SHP_subprefeitura&arqTipo=Shapefile')
+
+SHAPEFILE_PATH = solve_path(ORIGINAL_DATA_DIR, 'dados_geosampa')
