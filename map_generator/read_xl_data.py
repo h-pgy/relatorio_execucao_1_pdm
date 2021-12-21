@@ -282,7 +282,8 @@ class DataParser:
 
         if not self.overwrite:
             saved = self.load_cached_file(output_file)
-            if saved:
+            if saved is not None:
+                print(f'Carregando arquivo já salvo: {output_file}')
                 return saved
         
         data = self.parse_all_files()
