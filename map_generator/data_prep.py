@@ -20,11 +20,11 @@ class DataPrepper:
         if df is None:
             df = self.read_data()
         self.df = df
-
+        
         self.file_names = self.get_filenames(self.df)
-
-
         self.cols_not_subs = ('meta_num', 'secretaria', 'obs', 'file_name')
+
+        self.df = self.rename_columns(df)
         self.subs_cols = self.get_subs_cols(self.df)
 
     def get_filenames(self, df):
@@ -37,7 +37,7 @@ class DataPrepper:
 
     def check_de_para_cols(self, df):
 
-        for sub in self.subs_cols:
+        for sub in self.get_subs_cols(df):
             try:
                 self.DE_PARA_SUBS[sub]
             except KeyError:
@@ -47,8 +47,9 @@ class DataPrepper:
     def check_all_subs_present(self, df):
 
         subs_geo = self.geodf['sp_nome'].unique()
-        subs_df = set(self.subs_cols)
-
+        #aqui preciso buscar novamente as colunas
+        subs_df = set(self.get_subs_cols(df))
+        print(subs_df)
         for sub in subs_geo:
             if sub not in subs_df:
                 raise ValueError(f'Subprefeitura {sub} não encontrada nos dados!')
@@ -56,11 +57,14 @@ class DataPrepper:
 
     def rename_columns(self, df):
 
-        rename = {sub : sub.lower().strip() for sub in self.subs_cols}
+        padronizar = {sub : sub.lower().strip() for sub in 
+                self.get_subs_cols(df)}
 
-        df = df.rename(rename, axis=1)
+        df = df.rename(padronizar, axis=1)
 
         self.check_de_para_cols(df)
+
+        df = df.rename(self.DE_PARA_SUBS, axis=1)
         self.check_all_subs_present(df)
 
         return df

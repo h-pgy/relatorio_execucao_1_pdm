@@ -116,7 +116,7 @@ def gen_col_range(col_inicio, col_fim):
         
         return [number_to_letter(num) for num in num_range]
 
-def open_shp(self, path):
+def open_shp(path):
 
     shp = find_files_recursive(path, extension='.shp')[0]
     geo_df = gpd.read_file(shp)
