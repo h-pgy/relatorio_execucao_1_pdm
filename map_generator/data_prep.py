@@ -87,7 +87,7 @@ class DataPrepper:
         df_file = df[df['file_name']==file_name].copy()
         series_acumulados = df_file[self.subs_cols].sum()
 
-        return file_name, series_acumulados
+        return series_acumulados
 
     def __call__(self, file_name):
 
