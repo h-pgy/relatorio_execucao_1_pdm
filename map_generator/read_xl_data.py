@@ -221,6 +221,11 @@ class DataParser:
     def parse_all_files(self, files=None):
 
         files = files or self.get_xl_files()
+
+        if not files:
+            raise RuntimeError(f'Nenhum arquivo encontrado em {self.folder}.'
+            'Necessário baixá-los e salvá-los no diretório.')
+
         all_data = []
         for file in files:
             print(f'Parsing {file}')
