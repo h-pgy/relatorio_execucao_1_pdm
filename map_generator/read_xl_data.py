@@ -256,6 +256,7 @@ class DataParser:
         df['meta_num'] = meta
         df['secretaria'] = secretaria
         df['obs'] = obs
+        df['file_name'] = sheet_name + '.jpg'
 
 
         return df
