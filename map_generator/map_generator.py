@@ -65,6 +65,10 @@ class MapGenerator:
         data = data.rename({'index' : 'sp_nome',
                         0 : 'valor_acumulado'}, axis = 1)
 
+        #transformando escala mapa SMT
+        if file_name == 'smt_43.jpg':
+            data['valor_acumulado'] = data['valor_acumulado']/1000
+
         return data
     
     def merge_data(self, data):
